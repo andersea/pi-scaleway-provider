@@ -1,5 +1,5 @@
 {
-  "name": "pi-scaleway-gen",
+  "name": "pi-scaleway-provider",
   "version": "0.1.0",
   "description": "Pi Agent extension for Scaleway's Generative APIs",
   "main": "dist/index.js",
@@ -22,12 +22,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/andersea/scaleway-gen-extension.git"
+    "url": "https://github.com/andersea/pi-scaleway-provider.git"
   },
   "bugs": {
-    "url": "https://github.com/andersea/scaleway-gen-extension/issues"
+    "url": "https://github.com/andersea/pi-scaleway-provider/issues"
   },
-  "homepage": "https://github.com/andersea/scaleway-gen-extension#readme",
+  "homepage": "https://github.com/andersea/pi-scaleway-provider#readme",
   "pi": {
     "extensions": [
       "./dist/index.js"

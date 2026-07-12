@@ -6,7 +6,7 @@ A minimal Pi extension that registers Scaleway's Generative APIs as a native Pi 
 
 ```bash
 # Install from local development copy
-pi -e /path/to/scaleway-gen-extension
+pi -e /path/to/pi-scaleway-provider
 
 # Or install from npm/git (when published)
 pi install npm:pi-scaleway-gen

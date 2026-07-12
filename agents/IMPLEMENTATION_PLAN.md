@@ -35,7 +35,7 @@ Build a Pi Agent extension that provides seamless integration with Scaleway's Ge
 ## Architecture
 
 ```
-scaleway-gen-extension/
+pi-scaleway-provider/
 ├── package.json              # npm package with pi extension manifest
 ├── tsconfig.json             # TypeScript config
 ├── src/

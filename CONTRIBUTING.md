@@ -6,8 +6,8 @@ Thank you for considering contributing to this project! Here are some guidelines
 
 ```bash
 # Clone the repository
-git clone https://github.com/andersea/scaleway-gen-extension.git
-cd scaleway-gen-extension
+git clone https://github.com/andersea/pi-scaleway-provider.git
+cd pi-scaleway-provider
 
 # Install dependencies
 npm install
