@@ -12,7 +12,7 @@
  */
 
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent/compat";
-import { DEFAULT_MODELS } from "./models";
+import { getModels } from "./models";
 
 // Configuration constants
 const API_BASE = "https://api.scaleway.com/v1";
@@ -31,9 +31,11 @@ function loadConfig() {
 }
 
 // Provider registration
-export default function (pi: ExtensionAPI) {
+export default async function (pi: ExtensionAPI) {
   const config = loadConfig();
   if (!config) return;
+
+  const models = await getModels(config.apiKey);
 
   pi.registerProvider("scaleway", {
     name: "Scaleway Generative AI",
@@ -41,7 +43,7 @@ export default function (pi: ExtensionAPI) {
     apiKey: config.apiKey,
     authHeader: true,
     api: "openai-responses",
-    models: DEFAULT_MODELS
+    models
   });
 
   // Status widget
