@@ -7,8 +7,8 @@
  * - SCW_SECRET_KEY: Scaleway API key (required)
  * 
  * Usage:
- *   pi -e ./src/index.ts
- *   /model scaleway/openai/gpt-oss-120b:fp4 "Test query"
+ *   pi -e ./dist/index.js
+ *   pi -e ./dist/index.js --model scaleway/gpt-oss-120b -p "Test query"
  */
 
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent/compat";

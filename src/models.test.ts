@@ -33,9 +33,14 @@ describe('model exclusions', () => {
 });
 
 describe('gpt-oss-120b', () => {
-  it('has api override set to openai-responses', () => {
+  // EXCEPTION: despite Scaleway's docs stating gpt-oss-120b requires the
+  // Responses API, we route it through openai-completions. The Responses
+  // endpoint rejects the `include` field Pi sends for reasoning, returning
+  // 400 "payload validation: 'include' is not supported". See the model
+  // entry comment in models.ts and AGENTS.md for the full rationale.
+  it('uses the default openai-completions API (no responses override)', () => {
     const model = DEFAULT_MODELS.find(m => m.id === 'gpt-oss-120b');
-    expect(model?.api).toBe('openai-responses');
+    expect(model?.api).toBeUndefined();
   });
 });
 

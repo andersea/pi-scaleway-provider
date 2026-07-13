@@ -8,6 +8,15 @@
  * Only serverless-available chat/generation models are included.
  * Non-chat models (whisper-large-v3, qwen3-embedding-8b, bge-multilingual-gemma2),
  * EOL for Serverless models, and dedicated-only models are excluded.
+ *
+ * NOTE: Scaleway's OpenAI-compatible chat completions API does NOT universally
+ * support the `developer` role. Models like qwen3.5-397b-a17b and
+ * mistral-medium-3.5-128b reject `role: "developer"` with a 400 "Unexpected
+ * message role" error. All models do accept `role: "system"` though.
+ * We set `supportsDeveloperRole: false` via compat to force `role: "system"`.
+ *
+ * NOTE: `gpt-oss-120b` is an EXCEPTION — see the model entry below and the
+ * "gpt-oss-120b exception" note in AGENTS.md for the full rationale.
  */
 
 import type { ProviderModelConfig } from "@earendil-works/pi-coding-agent/compat";
@@ -23,11 +32,28 @@ import type { ProviderModelConfig } from "@earendil-works/pi-coding-agent/compat
  */
 export const DEFAULT_MODELS: ProviderModelConfig[] = [
   // ── OpenAI ────────────────────────────────────────────────────────────
+  //
+  // EXCEPTION: gpt-oss-120b uses the openai-completions API, NOT openai-responses.
+  //
+  // Scaleway's docs state gpt-oss-120b requires the Responses API, but in
+  // practice Scaleway's /v1/responses endpoint rejects the `include` field:
+  //   { "status":400, "error":"BAD REQUEST",
+  //     "message":"payload validation: 'include' is not supported" }
+  //
+  // Pi's openai-responses adapter sends `include: ["reasoning.encrypted_content"]`
+  // whenever a reasoning effort is set (see pi-ai's openai-responses.js), and
+  // there is no compat flag to suppress it in the current pi version. As a
+  // result, every reasoning request to gpt-oss-120b via /v1/responses 400s.
+  //
+  // The chat completions endpoint serves gpt-oss-120b correctly with tools,
+  // system prompts, and reasoning tokens, so we route it through
+  // openai-completions like every other Scaleway model. No `api` override is
+  // set — the provider-level default (openai-completions) applies.
   {
     id: "gpt-oss-120b",
     name: "GPT OSS 120B",
-    api: "openai-responses",
     reasoning: true,
+    thinkingLevelMap: { off: null },
     input: ["text"],
     cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
     contextWindow: 128_000,
@@ -179,10 +205,19 @@ export const DEFAULT_MODELS: ProviderModelConfig[] = [
  * This is a synchronous static lookup — no network calls.
  * All model metadata is curated from Scaleway's official documentation.
  *
- * Models that need a non-default API (e.g. openai-responses) have `api` set
- * directly on their static definition in DEFAULT_MODELS.
- * All other models rely on the provider-level default ("openai-completions").
+ * All models use the provider-level default API ("openai-completions"). No
+ * model sets a per-model `api` override — see the "gpt-oss-120b exception"
+ * note in AGENTS.md and the model entry comment for why gpt-oss-120b is NOT
+ * routed through openai-responses despite the Scaleway docs suggesting so.
+ *
+ * All models get `compat: { supportsDeveloperRole: false }` injected so that
+ * Pi uses `role: "system"` instead of `role: "developer"` for system prompts.
+ * Scaleway does not universally support the `developer` role — models like
+ * qwen3.5-397b-a17b and mistral-medium-3.5-128b return a 400 error for it.
  */
 export function getModels(): ProviderModelConfig[] {
-  return [...DEFAULT_MODELS];
+  return DEFAULT_MODELS.map((m) => ({
+    ...m,
+    compat: { ...m.compat, supportsDeveloperRole: false },
+  }));
 }

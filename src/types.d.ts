@@ -39,5 +39,19 @@ declare module "@earendil-works/pi-coding-agent/compat" {
     };
     contextWindow: number;
     maxTokens: number;
+    /**
+     * Maps pi thinking levels to provider/model-specific values; null marks a level unsupported.
+     */
+    thinkingLevelMap?: Record<string, string | null>;
+    /**
+     * OpenAI compatibility settings (e.g., supportsDeveloperRole).
+     * Added to all models to force role: "system" over role: "developer",
+     * since Scaleway does not universally support the developer role.
+     */
+    compat?: {
+      supportsDeveloperRole?: boolean;
+      supportsStore?: boolean;
+      supportsReasoningEffort?: boolean;
+    };
   }
 }

@@ -21,10 +21,39 @@ Or online: [pi.dev/docs/extensions](https://pi.dev/docs/extensions)
 This extension calls `pi.registerProvider("scaleway", {...})` in `src/index.ts` with:
 - `baseUrl`: `https://api.scaleway.ai/v1`
 - `apiKey`: from `SCW_SECRET_KEY` env var
-- `api`: `"openai-completions"` (default; per-model overrides in models[])
+- `api`: `"openai-completions"` (default for every model)
 - `models`: an array of `ProviderModelConfig` objects from `src/models.ts`
 
-Each model can optionally set `api` — only `gpt-oss-120b` needs `"openai-responses"`. All others default to `"openai-completions"`.
+**No model sets a per-model `api` override.** All Scaleway models — including
+`gpt-oss-120b` — use the provider-level default `"openai-completions"`.
+
+### gpt-oss-120b exception
+
+Scaleway's docs state that `gpt-oss-120b` must be accessed via the Responses
+API (`openai-responses`). **This extension deliberately does NOT do that.**
+
+When routed through `openai-responses`, Pi's adapter (in
+`@earendil-works/pi-ai`, `openai-responses.js`) sends the field:
+```json
+"include": ["reasoning.encrypted_content"]
+```
+whenever a reasoning effort is set (i.e. any non-"off" thinking level, which is
+the default for this reasoning model). Scaleway's `/v1/responses` endpoint does
+**not support the `include` field at all** and rejects the request:
+```
+400 BAD REQUEST — "payload validation: 'include' is not supported"
+```
+
+There is no compat flag in the current pi version to suppress `include`.
+Scaleway's `/v1/chat/completions` endpoint, by contrast, serves `gpt-oss-120b`
+correctly with tools, system prompts, and reasoning tokens. So the model is
+routed through `openai-completions` like every other Scaleway model. This is an
+deliberate, documented deviation from the Scaleway docs.
+
+**If this changes in the future** (Scaleway adds `include` support, or pi-ai
+exposes a compat flag to drop it), `gpt-oss-120b` can be moved back to
+`openai-responses` by adding `api: "openai-responses"` to its entry in
+`src/models.ts` and updating the test in `src/models.test.ts`.
 
 The type definitions are in `src/types.d.ts` (augments `@earendil-works/pi-coding-agent/compat`).
 
