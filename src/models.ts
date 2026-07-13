@@ -1,10 +1,13 @@
 /**
  * Scaleway model definitions
- * 
- * Curated list of stable, popular models available via Scaleway's Serverless API.
- * Model IDs verified against Scaleway's documentation (May 2026).
- * 
- * Uses the /v1/models endpoint for dynamic discovery.
+ *
+ * Purely static model list sourced from Scaleway's official documentation:
+ * https://www.scaleway.com/en/docs/generative-apis/reference-content/supported-models/
+ * Reviewed: May 26, 2026
+ *
+ * Only serverless-available chat/generation models are included.
+ * Non-chat models (whisper-large-v3, qwen3-embedding-8b, bge-multilingual-gemma2),
+ * EOL for Serverless models, and dedicated-only models are excluded.
  */
 
 import type { ProviderModelConfig } from "@earendil-works/pi-coding-agent/compat";
@@ -19,10 +22,16 @@ export const RESPONSE_API_MODELS = new Set<string>([
 ]);
 
 /**
- * Default models to use when dynamic discovery is unavailable.
- * Selected for stability, popularity, and Serverless availability.
+ * Static list of all serverless chat/generation models available on Scaleway.
+ * Source: Scaleway docs (Reviewed May 26, 2026)
+ *
+ * Excluded:
+ * - whisper-large-v3 (audio transcription, not a chat model)
+ * - qwen3-embedding-8b, bge-multilingual-gemma2 (embedding models)
+ * - Models marked "EOL for Serverless" or "No" in the serverless column
  */
 export const DEFAULT_MODELS: ProviderModelConfig[] = [
+  // ── OpenAI ────────────────────────────────────────────────────────────
   {
     id: "gpt-oss-120b",
     name: "GPT OSS 120B",
@@ -33,6 +42,8 @@ export const DEFAULT_MODELS: ProviderModelConfig[] = [
     contextWindow: 128_000,
     maxTokens: 32_000
   },
+
+  // ── Qwen ──────────────────────────────────────────────────────────────
   {
     id: "qwen3.6-35b-a3b",
     name: "Qwen 3.6 35B",
@@ -43,14 +54,34 @@ export const DEFAULT_MODELS: ProviderModelConfig[] = [
     maxTokens: 32_000
   },
   {
-    id: "mistral-small-3.2-24b-instruct-2506",
-    name: "Mistral Small 3.2",
-    reasoning: false,
+    id: "qwen3.5-397b-a17b",
+    name: "Qwen 3.5 397B",
+    reasoning: true,
     input: ["text", "image"],
+    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+    contextWindow: 250_000,
+    maxTokens: 16_000
+  },
+  {
+    id: "qwen3-235b-a22b-instruct-2507",
+    name: "Qwen 3 235B Instruct",
+    reasoning: true,
+    input: ["text"],
+    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+    contextWindow: 250_000,
+    maxTokens: 16_000
+  },
+  {
+    id: "qwen3-coder-30b-a3b-instruct",
+    name: "Qwen 3 Coder 30B",
+    reasoning: false,
+    input: ["text"],
     cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
     contextWindow: 128_000,
     maxTokens: 32_000
   },
+
+  // ── Google / Gemma ────────────────────────────────────────────────────
   {
     id: "gemma-4-26b-a4b-it",
     name: "Gemma 4 26B",
@@ -61,70 +92,95 @@ export const DEFAULT_MODELS: ProviderModelConfig[] = [
     maxTokens: 32_000
   },
   {
+    id: "gemma-3-27b-it",
+    name: "Gemma 3 27B",
+    reasoning: false,
+    input: ["text", "image"],
+    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+    contextWindow: 40_000,
+    maxTokens: 8_000
+  },
+
+  // ── Meta / Llama ──────────────────────────────────────────────────────
+  {
+    id: "llama-3.3-70b-instruct",
+    name: "Llama 3.3 70B",
+    reasoning: false,
+    input: ["text"],
+    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+    contextWindow: 100_000,
+    maxTokens: 16_000
+  },
+
+  // ── Mistral ───────────────────────────────────────────────────────────
+  {
+    id: "mistral-small-3.2-24b-instruct-2506",
+    name: "Mistral Small 3.2",
+    reasoning: false,
+    input: ["text", "image"],
+    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+    contextWindow: 128_000,
+    maxTokens: 32_000
+  },
+  {
     id: "mistral-medium-3.5-128b",
     name: "Mistral Medium 3.5",
     reasoning: true,
     input: ["text", "image"],
     cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+    contextWindow: 180_000,
+    maxTokens: 16_000
+  },
+  {
+    id: "voxtral-small-24b-2507",
+    name: "Voxtral Small 24B",
+    reasoning: false,
+    input: ["text", "audio"],
+    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+    contextWindow: 32_000,
+    maxTokens: 16_000
+  },
+  {
+    id: "devstral-2-123b-instruct-2512",
+    name: "Devstral 2 123B",
+    reasoning: false,
+    input: ["text"],
+    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+    contextWindow: 200_000,
+    maxTokens: 16_000
+  },
+  {
+    id: "pixtral-12b-2409",
+    name: "Pixtral 12B",
+    reasoning: false,
+    input: ["text", "image"],
+    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+    contextWindow: 128_000,
+    maxTokens: 4_000
+  },
+
+  // ── Z.ai ──────────────────────────────────────────────────────────────
+  {
+    id: "glm-5.2",
+    name: "GLM 5.2",
+    reasoning: true,
+    input: ["text"],
+    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
     contextWindow: 256_000,
     maxTokens: 16_000
+  },
+
+  // ── H Company ─────────────────────────────────────────────────────────
+  {
+    id: "holo2-30b-a3b",
+    name: "Holo2 30B",
+    reasoning: false,
+    input: ["text", "image"],
+    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+    contextWindow: 22_000,
+    maxTokens: 32_000
   }
 ];
-
-/**
- * Scaleway /v1/models API response shape (per models.md)
- */
-interface ScalewayModelsResponse {
-  object: "list";
-  data: ScalewayModel[];
-}
-
-interface ScalewayModel {
-  id: string;
-  object: "model";
-  created: number;
-  owned_by: string;
-}
-
-/**
- * Normalizes the Scaleway /v1/models response into an array of ScalewayModel.
- * Expects the OpenAI-style list format: { object: "list", data: [...] }
- */
-function normalizeModels(raw: unknown): ScalewayModel[] {
-  if (raw === null || typeof raw !== 'object') {
-    return [];
-  }
-  const response = raw as Partial<ScalewayModelsResponse>;
-  if (response.object !== "list" || !Array.isArray(response.data)) {
-    console.warn('[Scaleway] Unexpected /v1/models response shape:', raw);
-    return [];
-  }
-  // Validate each model entry has required fields
-  return response.data.filter((m): m is ScalewayModel =>
-    m !== null &&
-    typeof m === 'object' &&
-    typeof m.id === 'string' &&
-    m.object === 'model' &&
-    typeof m.created === 'number' &&
-    typeof m.owned_by === 'string'
-  );
-}
-
-/**
- * Infers provider and quantization from model ID.
- * Scaleway model IDs follow patterns like:
- * - "llama-3.3-70b-instruct" (provider inferred from owned_by)
- * - "pydantic-70b-instruct:bf16" (quantization suffix present)
- */
-function parseModelId(modelId: string): string {
-  const quantizationMatch = modelId.match(/^(.+):([a-z0-9]+)$/);
-
-  if (quantizationMatch) {
-    return quantizationMatch[1];
-  }
-
-  return modelId;
-}
 
 /**
  * Determines which API type to use for a given model ID.
@@ -135,61 +191,15 @@ export function getApiForModel(modelId: string): "openai-completions" | "openai-
 }
 
 /**
- * Discover available models from Scaleway's API.
- * 
- * Calls GET /v1/models to get current catalog from Scaleway.
- * Returns models with provider-prefixed IDs for Pi's model registry.
- * 
- * @param apiKey - Scaleway API key
- * @returns Promise resolving to list of available models
+ * Returns the list of available models.
+ *
+ * This is a synchronous static lookup — no network calls.
+ * All model metadata is curated from Scaleway's official documentation.
  */
-export async function discoverModels(apiKey: string): Promise<ProviderModelConfig[]> {
-  try {
-    const response = await fetch('https://api.scaleway.ai/v1/models', {
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
-      }
-    });
-    
-    if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
-    }
-
-    const rawModels = await response.json();
-    const models: ScalewayModel[] = normalizeModels(rawModels);
-    
-    if (models.length === 0) {
-      console.warn('[Scaleway] No models returned from API, using defaults');
-      return DEFAULT_MODELS;
-    }
-    
-    // Transform to Pi's ProviderModelConfig format
-    return models.map((m: ScalewayModel) => {
-      const modelId = parseModelId(m.id);
-      return {
-        id: modelId,
-        name: modelId,
-        reasoning: true,
-        input: ['text', 'image'],
-        cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-        contextWindow: 128_000,
-        maxTokens: 32_000,
-        api: getApiForModel(modelId)
-      };
-    });
-  } catch (error) {
-    console.error('Model discovery failed:', error);
-    return DEFAULT_MODELS;
-  }
-}
-
-/**
- * Get models, attempting discovery first and falling back to defaults.
- * 
- * @param apiKey - Scaleway API key
- * @returns Promise resolving to list of available models
- */
-export async function getModels(apiKey: string): Promise<ProviderModelConfig[]> {
-  return discoverModels(apiKey);
+export function getModels(): ProviderModelConfig[] {
+  // Apply per-model API assignments before returning
+  return DEFAULT_MODELS.map(model => ({
+    ...model,
+    api: model.api ?? getApiForModel(model.id)
+  }));
 }

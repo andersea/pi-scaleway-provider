@@ -36,9 +36,9 @@ export default async function (pi: ExtensionAPI) {
   const config = loadConfig();
   if (!config) return;
 
-  const models = await getModels(config.apiKey);
+  const models = getModels();
 
-  // Register provider with resolved models
+  // Register provider with static model list
 
   pi.registerProvider("scaleway", {
     name: "Scaleway Generative AI",
