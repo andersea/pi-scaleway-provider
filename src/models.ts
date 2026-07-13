@@ -13,15 +13,6 @@
 import type { ProviderModelConfig } from "@earendil-works/pi-coding-agent/compat";
 
 /**
- * Models that must use the OpenAI *responses* API instead of the default
- * chat‑completion API. Currently the only model that needs this is the
- * OSS 120B model.
- */
-export const RESPONSE_API_MODELS = new Set<string>([
-  "gpt-oss-120b"
-]);
-
-/**
  * Static list of all serverless chat/generation models available on Scaleway.
  * Source: Scaleway docs (Reviewed May 26, 2026)
  *
@@ -183,23 +174,15 @@ export const DEFAULT_MODELS: ProviderModelConfig[] = [
 ];
 
 /**
- * Determines which API type to use for a given model ID.
- * OSS 120B model requires the responses API, all others use completions.
- */
-export function getApiForModel(modelId: string): "openai-completions" | "openai-responses" {
-  return RESPONSE_API_MODELS.has(modelId) ? "openai-responses" : "openai-completions";
-}
-
-/**
  * Returns the list of available models.
  *
  * This is a synchronous static lookup — no network calls.
  * All model metadata is curated from Scaleway's official documentation.
+ *
+ * Models that need a non-default API (e.g. openai-responses) have `api` set
+ * directly on their static definition in DEFAULT_MODELS.
+ * All other models rely on the provider-level default ("openai-completions").
  */
 export function getModels(): ProviderModelConfig[] {
-  // Apply per-model API assignments before returning
-  return DEFAULT_MODELS.map(model => ({
-    ...model,
-    api: model.api ?? getApiForModel(model.id)
-  }));
+  return [...DEFAULT_MODELS];
 }
