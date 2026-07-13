@@ -12,7 +12,7 @@
  */
 
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent/compat";
-import { getModels } from "./models";
+import { getModels } from "./models.js";
 
 // Configuration constants
 // Use the full /v1 base so Pi's provider paths resolve to Scaleway's v1 endpoints.

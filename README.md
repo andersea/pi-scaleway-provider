@@ -5,12 +5,14 @@ A minimal Pi extension that registers Scaleway's Generative APIs as a native Pi 
 ## Installation
 
 ```bash
+# Production — install via npm (recommended)
+pi install npm:@andersea/pi-scaleway-gen
+
+# Or install from git
+pi install git:github.com/andersea/pi-scaleway-gen
+
 # Development — load directly from source
 pi -e ./src/index.ts
-
-# Or install from npm/git (when published)
-pi install npm:pi-scaleway-gen
-pi install git:github.com/username/pi-scaleway-gen
 ```
 
 ## Configuration

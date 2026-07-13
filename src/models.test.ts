@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { DEFAULT_MODELS, getModels } from './models';
+import { DEFAULT_MODELS, getModels } from './models.js';
 
 describe('model exclusions', () => {
   it('excludes non-chat models (whisper, embeddings)', () => {
