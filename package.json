@@ -1,5 +1,5 @@
 {
-  "name": "@andersea/pi-scaleway-gen",
+  "name": "@andersea/pi-scaleway-provider",
   "version": "0.1.0",
   "description": "Pi Agent extension for Scaleway's Generative APIs",
   "type": "module",
