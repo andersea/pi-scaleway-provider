@@ -9,7 +9,7 @@ A minimal Pi extension that registers Scaleway's Generative APIs as a native Pi 
 pi install npm:@andersea/pi-scaleway-gen
 
 # Or install from git
-pi install git:github.com/andersea/pi-scaleway-gen
+pi install git:github.com/andersea/pi-scaleway-provider
 
 # Development — load directly from source
 pi -e ./src/index.ts
