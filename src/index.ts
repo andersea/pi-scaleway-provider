@@ -15,7 +15,8 @@ import type { ExtensionAPI } from "@earendil-works/pi-coding-agent/compat";
 import { getModels } from "./models";
 
 // Configuration constants
-const API_BASE = "https://api.scaleway.ai"; // Host only – no trailing /v1
+// Use the full /v1 base so Pi's provider paths resolve to Scaleway's v1 endpoints.
+const API_BASE = "https://api.scaleway.ai/v1";
 
 // Configuration loader
 function loadConfig() {
@@ -37,6 +38,8 @@ export default async function (pi: ExtensionAPI) {
 
   const models = await getModels(config.apiKey);
 
+  // Register provider with resolved models
+
   pi.registerProvider("scaleway", {
     name: "Scaleway Generative AI",
     baseUrl: API_BASE,
@@ -52,4 +55,6 @@ export default async function (pi: ExtensionAPI) {
     text: "Scaleway: ✅ Ready",
     tooltip: "Scaleway Generative APIs provider"
   });
+
+  // Normal exit after registration
 }

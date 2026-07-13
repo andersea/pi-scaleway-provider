@@ -26,6 +26,7 @@ export const DEFAULT_MODELS: ProviderModelConfig[] = [
   {
     id: "openai/gpt-oss-120b:fp4",
     name: "GPT OSS 120B",
+    api: "openai-responses",
     reasoning: true,
     input: ["text"],
     cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
