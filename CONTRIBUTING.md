@@ -12,7 +12,7 @@ cd pi-scaleway-provider
 # Install dependencies
 npm install
 
-# Build
+# Build (optional — jiti loads TypeScript directly, build is for IDE/editor convenience)
 npm run build
 
 # Lint

@@ -5,8 +5,8 @@ A minimal Pi extension that registers Scaleway's Generative APIs as a native Pi 
 ## Installation
 
 ```bash
-# Install from local development copy
-pi -e /path/to/pi-scaleway-provider
+# Development — load directly from source
+pi -e ./src/index.ts
 
 # Or install from npm/git (when published)
 pi install npm:pi-scaleway-gen
@@ -34,34 +34,30 @@ export SCW_SECRET_KEY="scw_..."
 /model scaleway/
 
 # Use a specific model
-/model scaleway/openai/gpt-oss-120b:fp4
+/model scaleway/gpt-oss-120b
 ```
 
 ### Example Prompts
 
 ```bash
 # Simple query with GPT OSS 120B
-/model scaleway/openai/gpt-oss-120b:fp4 "Write a haiku about AI"
+/model scaleway/gpt-oss-120b "Write a haiku about AI"
 
 # Code generation with Qwen (supports vision)
-/model scaleway/qwen/qwen3.6-35b-a3b:bf16 "Write a Python function to sort a list"
+/model scaleway/qwen3.6-35b-a3b "Write a Python function to sort a list"
 
 # Image analysis with Mistral Small
-/model scaleway/mistral/mistral-small-3.2-24b-instruct-2506:fp8 "What's in this image?" @image.png
+/model scaleway/mistral-small-3.2-24b-instruct-2506 "What's in this image?" @image.png
 
 # Complex reasoning with Gemma
-/model scaleway/google/gemma-4-26b-a4b-it:bf16 "Explain quantum entanglement"
+/model scaleway/gemma-4-26b-a4b-it "Explain quantum entanglement"
 ```
 
-## API Selection Behavior
+### API Selection Behavior
 
-By default, all Scaleway models are accessed using the OpenAI **chat completions** API (`openai-completions`). However, certain models may require the **responses** API instead. The extension defines a constant `RESPONSE_API_MODELS` that contains the identifiers of models needing the responses API. Currently, the only model in this set is `openai/gpt-oss-120b:fp4`.
+All Scaleway models are accessed using the OpenAI **chat completions** API (`openai-completions`). The provider registers with this as the default API — no per-model overrides are needed.
 
-When a model ID matches an entry in `RESPONSE_API_MODELS`, the extension selects the `openai-responses` API for that specific model. All other models continue to use `openai-completions`. This per‑model selection is transparent to the user; you simply address the model by its full ID (e.g., `scaleway/openai/gpt-oss-120b:fp4`).
-
-This approach allows the provider to keep the default API as `openai-completions` (which covers the vast majority of models) while correctly handling the special cases that require the responses API.
-
-> 📌 **Note**: Model availability may change. Run `/model scaleway/` to see currently available models. Future enhancement: dynamic model discovery from Scaleway API.
+> 📌 **Note**: Model availability may change. Run `/model scaleway/` to see currently available models. Models are defined statically in `src/models.ts`, sourced from Scaleway's official documentation.
 
 ## Troubleshooting
 
@@ -90,7 +86,7 @@ Model 'xxx' not found
 ```
 **Solution:** 
 - Use `/model scaleway/` to list available models
-- Verify the model ID matches exactly (including quantization suffix like `:fp4`, `:bf16`, `:fp8`)
+- Verify the model ID matches exactly (e.g. `gpt-oss-120b`, `qwen3.6-35b-a3b`)
 - Check Scaleway's documentation for current model availability
 
 ### 429 Rate Limited
@@ -124,15 +120,15 @@ This extension uses Pi's **provider registration** pattern:
 ```typescript
 pi.registerProvider("scaleway", {
   name: "Scaleway Generative AI",
-  baseUrl: "https://api.scaleway.com/v1",
+  baseUrl: "https://api.scaleway.ai/v1",
   apiKey: config.apiKey,
   authHeader: true,
-  api: "openai-completions", // default API for all models
-  models: [...] // each model may override api via getApiForModel()
+  api: "openai-completions",
+  models: getModels()
 });
 ```
 
-The provider registers with the default API (`openai-completions`). Individual model entries include a computed `api` field set by `getApiForModel()`. Models whose IDs appear in the exported `RESPONSE_API_MODELS` set (currently `openai/gpt-oss-120b:fp4`) receive `openai-responses` instead. See the **API Selection Behavior** section for details.
+All Scaleway models use the `openai-completions` API — including `gpt-oss-120b`, which the Scaleway docs suggest must use the Responses API. In practice, Scaleway's `/v1/responses` endpoint rejects the `include` field that Pi sends for reasoning models, so all models are routed through chat completions.
 
 Benefits of this approach:
 - Native Pi integration (`/model scaleway/...`)
@@ -141,12 +137,9 @@ Benefits of this approach:
 
 ### Model Management
 
-Models are defined in `src/models.ts`:
-- **Static defaults**: Curated list of stable, popular models
-- **Future enhancement**: Dynamic discovery via `GET /v1/models` API
-- **Fallback**: Always works offline with default models
+Models are defined in `src/models.ts` as a static, curated list sourced from [Scaleway's supported models page](https://www.scaleway.com/en/docs/generative-apis/reference-content/supported-models/).
 
-See [MODEL_DISCOVERY_STRATEGY.md](./MODEL_DISCOVERY_STRATEGY.md) for design rationale.
+Only serverless chat/generation models are included — non-chat models (audio, embeddings), EOL models, and dedicated-only models are excluded.
 
 ## Future Enhancements
 
