@@ -15,7 +15,7 @@ import type { ProviderModelConfig } from "@earendil-works/pi-coding-agent/compat
  * OSS 120B model.
  */
 export const RESPONSE_API_MODELS = new Set<string>([
-  "openai/gpt-oss-120b:fp4"
+  "gpt-oss-120b"
 ]);
 
 /**
@@ -24,7 +24,7 @@ export const RESPONSE_API_MODELS = new Set<string>([
  */
 export const DEFAULT_MODELS: ProviderModelConfig[] = [
   {
-    id: "openai/gpt-oss-120b:fp4",
+    id: "gpt-oss-120b",
     name: "GPT OSS 120B",
     api: "openai-responses",
     reasoning: true,
@@ -34,7 +34,7 @@ export const DEFAULT_MODELS: ProviderModelConfig[] = [
     maxTokens: 32_000
   },
   {
-    id: "qwen/qwen3.6-35b-a3b:bf16",
+    id: "qwen3.6-35b-a3b",
     name: "Qwen 3.6 35B",
     reasoning: true,
     input: ["text", "image"],
@@ -43,7 +43,7 @@ export const DEFAULT_MODELS: ProviderModelConfig[] = [
     maxTokens: 32_000
   },
   {
-    id: "mistral/mistral-small-3.2-24b-instruct-2506:fp8",
+    id: "mistral-small-3.2-24b-instruct-2506",
     name: "Mistral Small 3.2",
     reasoning: false,
     input: ["text", "image"],
@@ -52,7 +52,7 @@ export const DEFAULT_MODELS: ProviderModelConfig[] = [
     maxTokens: 32_000
   },
   {
-    id: "google/gemma-4-26b-a4b-it:bf16",
+    id: "gemma-4-26b-a4b-it",
     name: "Gemma 4 26B",
     reasoning: true,
     input: ["text", "image"],
@@ -61,7 +61,7 @@ export const DEFAULT_MODELS: ProviderModelConfig[] = [
     maxTokens: 32_000
   },
   {
-    id: "mistral/mistral-medium-3.5-128b:fp8",
+    id: "mistral-medium-3.5-128b",
     name: "Mistral Medium 3.5",
     reasoning: true,
     input: ["text", "image"],
@@ -116,20 +116,14 @@ function normalizeModels(raw: unknown): ScalewayModel[] {
  * - "llama-3.3-70b-instruct" (provider inferred from owned_by)
  * - "pydantic-70b-instruct:bf16" (quantization suffix present)
  */
-function parseModelId(modelId: string, ownedBy: string): { provider: string; modelId: string; quantization: string } {
+function parseModelId(modelId: string): string {
   const quantizationMatch = modelId.match(/^(.+):([a-z0-9]+)$/);
-  let quantization = 'fp4';
-  let cleanModelId = modelId;
-  
+
   if (quantizationMatch) {
-    cleanModelId = quantizationMatch[1];
-    quantization = quantizationMatch[2];
+    return quantizationMatch[1];
   }
-  
-  // Infer provider from owned_by field
-  const provider = ownedBy || 'openai';
-  
-  return { provider, modelId: cleanModelId, quantization };
+
+  return modelId;
 }
 
 /**
@@ -172,17 +166,16 @@ export async function discoverModels(apiKey: string): Promise<ProviderModelConfi
     
     // Transform to Pi's ProviderModelConfig format
     return models.map((m: ScalewayModel) => {
-      const { provider, modelId, quantization } = parseModelId(m.id, m.owned_by);
-      const fullModelId = `${provider}/${modelId}:${quantization}`;
+      const modelId = parseModelId(m.id);
       return {
-        id: fullModelId,
-        name: `${provider}/${modelId}`,
+        id: modelId,
+        name: modelId,
         reasoning: true,
         input: ['text', 'image'],
         cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
         contextWindow: 128_000,
         maxTokens: 32_000,
-        api: getApiForModel(fullModelId)
+        api: getApiForModel(modelId)
       };
     });
   } catch (error) {
