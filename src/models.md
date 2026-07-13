@@ -2,6 +2,8 @@
 
 The Scaleway /v1/models endpoint returns an OpenAI-style list response. The top-level payload contains a single list object with a data array of model entries.
 
+**Documentation note:** This extension uses the `/v1/models` endpoint to discover models, then registers each model with Pi. By default, all models use the **chat completions** API (`openai-completions`). Models that appear in the `RESPONSE_API_MODELS` set (currently only `openai/gpt-oss-120b:fp4`) are routed to the **responses** API (`openai-responses`).
+
 ## Endpoint and authentication
 
 - Full hostname: https://api.scaleway.ai

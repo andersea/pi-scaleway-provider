@@ -23,6 +23,10 @@ declare module "@earendil-works/pi-coding-agent/compat" {
   }
 
   export interface ProviderModelConfig {
+    /**
+     * Optional API type for this specific model. If omitted, the provider's default API applies.
+     */
+    api?: "openai-completions" | "openai-responses";
     id: string;
     name: string;
     reasoning: boolean;

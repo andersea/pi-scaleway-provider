@@ -15,7 +15,7 @@ import type { ExtensionAPI } from "@earendil-works/pi-coding-agent/compat";
 import { getModels } from "./models";
 
 // Configuration constants
-const API_BASE = "https://api.scaleway.com/v1";
+const API_BASE = "https://api.scaleway.ai"; // Host only – no trailing /v1
 
 // Configuration loader
 function loadConfig() {
@@ -42,7 +42,7 @@ export default async function (pi: ExtensionAPI) {
     baseUrl: API_BASE,
     apiKey: config.apiKey,
     authHeader: true,
-    api: "openai-responses",
+    api: "openai-completions",
     models
   });
 

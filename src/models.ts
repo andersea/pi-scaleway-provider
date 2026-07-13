@@ -10,6 +10,15 @@
 import type { ProviderModelConfig } from "@earendil-works/pi-coding-agent/compat";
 
 /**
+ * Models that must use the OpenAI *responses* API instead of the default
+ * chat‑completion API. Currently the only model that needs this is the
+ * OSS 120B model.
+ */
+export const RESPONSE_API_MODELS = new Set<string>([
+  "openai/gpt-oss-120b:fp4"
+]);
+
+/**
  * Default models to use when dynamic discovery is unavailable.
  * Selected for stability, popularity, and Serverless availability.
  */
@@ -123,6 +132,14 @@ function parseModelId(modelId: string, ownedBy: string): { provider: string; mod
 }
 
 /**
+ * Determines which API type to use for a given model ID.
+ * OSS 120B model requires the responses API, all others use completions.
+ */
+export function getApiForModel(modelId: string): "openai-completions" | "openai-responses" {
+  return RESPONSE_API_MODELS.has(modelId) ? "openai-responses" : "openai-completions";
+}
+
+/**
  * Discover available models from Scaleway's API.
  * 
  * Calls GET /v1/models to get current catalog from Scaleway.
@@ -155,14 +172,16 @@ export async function discoverModels(apiKey: string): Promise<ProviderModelConfi
     // Transform to Pi's ProviderModelConfig format
     return models.map((m: ScalewayModel) => {
       const { provider, modelId, quantization } = parseModelId(m.id, m.owned_by);
+      const fullModelId = `${provider}/${modelId}:${quantization}`;
       return {
-        id: `${provider}/${modelId}:${quantization}`,
+        id: fullModelId,
         name: `${provider}/${modelId}`,
         reasoning: true,
         input: ['text', 'image'],
         cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
         contextWindow: 128_000,
-        maxTokens: 32_000
+        maxTokens: 32_000,
+        api: getApiForModel(fullModelId)
       };
     });
   } catch (error) {
