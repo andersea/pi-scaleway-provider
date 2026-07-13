@@ -53,25 +53,13 @@ export SCW_SECRET_KEY="scw_..."
 /model scaleway/google/gemma-4-26b-a4b-it:bf16 "Explain quantum entanglement"
 ```
 
-## Supported Models
+## API Selection Behavior
 
-All models are available via Scaleway's **Serverless** API (no deployment required).
+By default, all Scaleway models are accessed using the OpenAI **chat completions** API (`openai-completions`). However, certain models may require the **responses** API instead. The extension defines a constant `RESPONSE_API_MODELS` that contains the identifiers of models needing the responses API. Currently, the only model in this set is `openai/gpt-oss-120b:fp4`.
 
-| Model | Context | Max Tokens | Modalities | Reasoning |
-|-------|---------|------------|------------|-----------|
-| `openai/gpt-oss-120b:fp4` | 128k | 32k | Text | ✅ Yes |
-| `qwen/qwen3.6-35b-a3b:bf16` | 256k | 32k | Text, Vision | ✅ Yes |
-| `mistral/mistral-small-3.2-24b-instruct-2506:fp8` | 128k | 32k | Text, Vision | ❌ No |
-| `google/gemma-4-26b-a4b-it:bf16` | 256k | 32k | Text, Vision | ✅ Yes |
-| `mistral/mistral-medium-3.5-128b:fp8` | 256k | 16k | Text, Vision | ✅ Yes |
+When a model ID matches an entry in `RESPONSE_API_MODELS`, the extension selects the `openai-responses` API for that specific model. All other models continue to use `openai-completions`. This per‑model selection is transparent to the user; you simply address the model by its full ID (e.g., `scaleway/openai/gpt-oss-120b:fp4`).
 
-### Model Notes
-
-- **GPT OSS 120B**: OpenAI's open-weight model, best for general reasoning tasks
-- **Qwen 3.6 35B**: Excellent for code and vision tasks, supports 256k context
-- **Mistral Small 3.2**: Optimized for tool calling, fast throughput
-- **Gemma 4 26B**: Google's MoE architecture, efficient for agentic workflows
-- **Mistral Medium 3.5**: Unified model for complex reasoning and coding
+This approach allows the provider to keep the default API as `openai-completions` (which covers the vast majority of models) while correctly handling the special cases that require the responses API.
 
 > 📌 **Note**: Model availability may change. Run `/model scaleway/` to see currently available models. Future enhancement: dynamic model discovery from Scaleway API.
 
@@ -139,10 +127,12 @@ pi.registerProvider("scaleway", {
   baseUrl: "https://api.scaleway.com/v1",
   apiKey: config.apiKey,
   authHeader: true,
-  api: "openai-responses",
-  models: [...]
+  api: "openai-completions", // default API for all models
+  models: [...] // each model may override api via getApiForModel()
 });
 ```
+
+The provider registers with the default API (`openai-completions`). Individual model entries include a computed `api` field set by `getApiForModel()`. Models whose IDs appear in the exported `RESPONSE_API_MODELS` set (currently `openai/gpt-oss-120b:fp4`) receive `openai-responses` instead. See the **API Selection Behavior** section for details.
 
 Benefits of this approach:
 - Native Pi integration (`/model scaleway/...`)
