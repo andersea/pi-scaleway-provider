@@ -18,11 +18,11 @@ Or online: [pi.dev/docs/extensions](https://pi.dev/docs/extensions)
 
 ## 2. How Provider Registration Works
 
-This extension calls `pi.registerProvider("scaleway", {...})` in `src/index.ts` with:
+This extension calls `pi.registerProvider("scaleway", {...})` in `extensions/index.ts` with:
 - `baseUrl`: `https://api.scaleway.ai/v1`
 - `apiKey`: from `SCW_SECRET_KEY` env var
 - `api`: `"openai-completions"` (default for every model)
-- `models`: an array of `ProviderModelConfig` objects from `src/models.ts`
+- `models`: an array of `ProviderModelConfig` objects from `extensions/models.ts`
 
 **No model sets a per-model `api` override.** All Scaleway models — including
 `gpt-oss-120b` — use the provider-level default `"openai-completions"`.
@@ -53,13 +53,13 @@ deliberate, documented deviation from the Scaleway docs.
 **If this changes in the future** (Scaleway adds `include` support, or pi-ai
 exposes a compat flag to drop it), `gpt-oss-120b` can be moved back to
 `openai-responses` by adding `api: "openai-responses"` to its entry in
-`src/models.ts` and updating the test in `src/models.test.ts`.
+`extensions/models.ts` and updating the test in `extensions/models.test.ts`.
 
-The type definitions are in `src/types.d.ts` (augments `@earendil-works/pi-coding-agent/compat`).
+The type definitions are in `extensions/types.d.ts` (augments `@earendil-works/pi-coding-agent/compat`).
 
 ## 3. Where the Model List Comes From
 
-Models are defined statically in `src/models.ts` — a curated list of **serverless chat/generation models only**. The source of truth is Scaleway's docs:
+Models are defined statically in `extensions/models.ts` — a curated list of **serverless chat/generation models only**. The source of truth is Scaleway's docs:
 
 - **Supported models page:** https://www.scaleway.com/en/docs/generative-apis/reference-content/supported-models/
 - **Current list reviewed:** May 26, 2026 (check the "Reviewed on" badge on that page)
@@ -78,9 +78,9 @@ Pi type for model entries: `ProviderModelConfig` from `@earendil-works/pi-coding
 When Scaleway adds or removes serverless models:
 
 1. Open the [supported models page](https://www.scaleway.com/en/docs/generative-apis/reference-content/supported-models/) and verify the "Reviewed on" date
-2. Add/remove entries in `src/models.ts` following the existing pattern
-3. Update the "Reviewed" date in `src/models.ts` header comment
-4. Update tests in `src/models.test.ts` — specifically the "contains all expected serverless chat models" test
+2. Add/remove entries in `extensions/models.ts` following the existing pattern
+3. Update the "Reviewed" date in `extensions/models.ts` header comment
+4. Update tests in `extensions/models.test.ts` — specifically the "contains all expected serverless chat models" test
 5. Run `npm test` to verify
 
 **When NOT to update the model list:**
@@ -88,6 +88,6 @@ When Scaleway adds or removes serverless models:
 - New embedding or audio transcription models (non-chat)
 - Models marked "EOL for Serverless"
 
-**Also update** `src/models.md` if the `/v1/models` API response format itself changes (this is a reference document, not code).
+**Also update** `extensions/models.md` if the `/v1/models` API response format itself changes (this is a reference document, not code).
 
 Never fetch or scrape Scaleway's docs page programmatically — the model list is statically curated by hand.

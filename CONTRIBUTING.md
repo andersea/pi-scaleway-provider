@@ -26,14 +26,13 @@ npm run lint
 export SCW_SECRET_KEY="scw_..."
 
 # Load the extension in Pi
-pi -e ./src/index.ts
+pi -e ./extensions/index.ts
 ```
 
 ## Code Style
 
 - Follow the existing ESLint configuration
-- Use 2-space indentation (enforced by .editorconfig)
-- Add TypeScript types for all functions and variables
+- Use 2-space indentation (enforced by .editorconfig)\- Add TypeScript types for all functions and variables
 
 ## Pull Requests
 

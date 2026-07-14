@@ -3,9 +3,9 @@
   "version": "0.2.0",
   "description": "Pi Agent extension for Scaleway's Generative APIs",
   "type": "module",
-  "main": "./src/index.ts",
+  "main": "./extensions/index.ts",
   "exports": {
-    ".": "./src/index.ts",
+    ".": "./extensions/index.ts",
     "./package.json": "./package.json"
   },
   "private": false,
@@ -15,7 +15,7 @@
     "dev": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "eslint src --ext .ts",
+    "lint": "eslint extensions --ext .ts",
     "prepublishOnly": "npm run typecheck && npm run lint"
   },
   "keywords": [
@@ -26,10 +26,10 @@
     "generative-ai"
   ],
   "files": [
-    "src",
+    "extensions",
     "README.md",
     "LICENSE",
-    "!src/**/*.test.ts"
+    "!extensions/**/*.test.ts"
   ],
   "author": "Anders Ellenshøj Andersen <andersa@ellenshoej.dk>",
   "license": "MIT",
@@ -43,7 +43,7 @@
   "homepage": "https://github.com/andersea/pi-scaleway-provider#readme",
   "pi": {
     "extensions": [
-      "./src/index.ts"
+      "./extensions/**/*.ts"
     ]
   },
   "peerDependencies": {

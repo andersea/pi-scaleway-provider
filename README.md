@@ -12,7 +12,7 @@ pi install npm:@andersea/pi-scaleway-gen
 pi install git:github.com/andersea/pi-scaleway-provider
 
 # Development — load directly from source
-pi -e ./src/index.ts
+pi -e ./extensions/index.ts
 ```
 
 ## Configuration
@@ -59,7 +59,7 @@ export SCW_SECRET_KEY="scw_..."
 
 All Scaleway models are accessed using the OpenAI **chat completions** API (`openai-completions`). The provider registers with this as the default API — no per-model overrides are needed.
 
-> 📌 **Note**: Model availability may change. Run `/model scaleway/` to see currently available models. Models are defined statically in `src/models.ts`, sourced from Scaleway's official documentation.
+> 📌 **Note**: Model availability may change. Run `/model scaleway/` to see currently available models. Models are defined statically in `extensions/models.ts`, sourced from Scaleway's official documentation.
 
 ## Troubleshooting
 
@@ -111,7 +111,7 @@ npm run build
 npm run lint
 
 # Test with Pi
-SCW_SECRET_KEY=scw_xxx pi -e ./src/index.ts
+SCW_SECRET_KEY=scw_xxx pi -e ./extensions/index.ts
 ```
 
 ## Architecture
@@ -138,7 +138,7 @@ Benefits of this approach:
 
 ### Model Management
 
-Models are defined in `src/models.ts` as a static, curated list sourced from [Scaleway's supported models page](https://www.scaleway.com/en/docs/generative-apis/reference-content/supported-models/).
+Models are defined in `extensions/models.ts` as a static, curated list sourced from [Scaleway's supported models page](https://www.scaleway.com/en/docs/generative-apis/reference-content/supported-models/).
 
 Only serverless chat/generation models are included — non-chat models (audio, embeddings), EOL models, and dedicated-only models are excluded.
 

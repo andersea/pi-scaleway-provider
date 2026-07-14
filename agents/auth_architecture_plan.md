@@ -48,7 +48,7 @@ Proposed secure authentication and credential storage design for Pi provider ext
 
 Files to create:
 - `agents/auth_architecture_plan.md`
-- Update `src/index.ts` to use vault credentials
+- Update `extensions/index.ts` to use vault credentials
 - Add `/login` command flow
 
 ## Simplification: Pi-Native Env Var Interpolation

@@ -15,5 +15,5 @@
     "@typescript-eslint/no-explicit-any": "warn",
     "no-console": "off"
   },
-  "ignorePatterns": ["dist/", "node_modules/", "*.js"]
+  "ignorePatterns": ["node_modules/", "*.js"]
 }
