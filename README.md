@@ -15,17 +15,31 @@ pi install git:github.com/andersea/pi-scaleway-provider
 pi -e ./extensions/index.ts
 ```
 
-## Configuration
+## Authentication
 
-### Required Environment Variable
+Scaleway supports two authentication methods:
 
-Set your Scaleway API key before running Pi:
+### Method 1: Interactive Login (Recommended)
+
+```bash
+# Start Pi, then run:
+/login scaleway
+# Enter your API key when prompted
+```
+
+Credentials are stored securely in `~/.pi/agent/auth.json` and persist across sessions.
+
+### Method 2: Environment Variable
 
 ```bash
 export SCW_SECRET_KEY="scw_..."
 ```
 
 > 💡 **Note**: `SCW_SECRET_KEY` is the official Scaleway convention. Get your API key from [Scaleway Console → Credentials → API Keys](https://console.scaleway.com/credentials/api-keys).
+
+### Credential Resolution
+
+Pi resolves credentials in this order: `auth.json` → environment variable.
 
 ## Usage
 
