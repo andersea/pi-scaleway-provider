@@ -44,8 +44,19 @@ Proposed secure authentication and credential storage design for Pi provider ext
 - **Encryption gaps**: Use AES-256 vault encryption
 - **Weak keys**: Generate 256-bit entropy tokens
 - **Integration issues**: Test with Pi async flow
+- **Redundant code**: Remove manual env var loading (Pi handles natively)
 
 Files to create:
 - `agents/auth_architecture_plan.md`
 - Update `src/index.ts` to use vault credentials
 - Add `/login` command flow
+
+## Simplification: Pi-Native Env Var Interpolation
+Pi's `registerProvider()` natively resolves `$ENV_VAR` syntax in `apiKey`. No separate credential loading function needed. Example patterns from official extensions:
+
+\`\`\`typescript
+// Direct interpolation (Pi handles resolution)
+apiKey: "$SCW_SECRET_KEY"
+\`\`\`
+
+This eliminates boilerplate `loadConfig()` functions and provides consistent error messaging when variables are missing.

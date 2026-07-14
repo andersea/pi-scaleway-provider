@@ -64,9 +64,8 @@ All Scaleway models are accessed using the OpenAI **chat completions** API (`ope
 ## Troubleshooting
 
 ### Extension doesn't load
-```
-[Scaleway] Missing API key. Set SCW_SECRET_KEY environment variable.
-```
+Pi reports missing or invalid credentials.
+
 **Solution:** Set the environment variable before starting Pi:
 ```bash
 export SCW_SECRET_KEY="scw_..."
@@ -123,7 +122,7 @@ This extension uses Pi's **provider registration** pattern:
 pi.registerProvider("scaleway", {
   name: "Scaleway Generative AI",
   baseUrl: "https://api.scaleway.ai/v1",
-  apiKey: config.apiKey,
+  apiKey: "$SCW_SECRET_KEY",
   authHeader: true,
   api: "openai-completions",
   models: getModels()
@@ -135,7 +134,7 @@ All Scaleway models use the `openai-completions` API — including `gpt-oss-120b
 Benefits of this approach:
 - Native Pi integration (`/model scaleway/...`)
 - Leverages Pi's built-in streaming and error handling
-- Minimal code (~50 lines)
+- Native Pi integration (`/model scaleway/...`)
 
 ### Model Management
 
