@@ -43,7 +43,7 @@
   "homepage": "https://github.com/andersea/pi-scaleway-provider#readme",
   "pi": {
     "extensions": [
-      "./extensions/**/*.ts"
+      "./extensions/index.ts"
     ]
   },
   "peerDependencies": {
