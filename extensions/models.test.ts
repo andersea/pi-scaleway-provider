@@ -52,6 +52,12 @@ describe('getModels', () => {
 
   it('returns the expected number of serverless models', () => {
     const models = getModels();
-    expect(models.length).toBe(15);
+    expect(models.length).toBe(17);
+  });
+
+  it('includes the serverless chat models added since the last review', () => {
+    const modelIds = DEFAULT_MODELS.map(m => m.id);
+    expect(modelIds).toContain('deepseek-v4-flash-0731');
+    expect(modelIds).toContain('qwen3.8-27b');
   });
 });
