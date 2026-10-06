@@ -13,11 +13,7 @@
     "declarationMap": true,
     "sourceMap": true,
     "noEmit": true,
-    "rootDir": "./extensions",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["extensions/*"]
-    }
+    "rootDir": "./extensions"
   },
   "include": ["extensions/**/*"],
   "exclude": ["node_modules"]

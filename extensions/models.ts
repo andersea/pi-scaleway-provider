@@ -3,7 +3,7 @@
  *
  * Purely static model list sourced from Scaleway's official documentation:
  * https://www.scaleway.com/en/docs/generative-apis/reference-content/supported-models/
- * Reviewed: May 26, 2026
+ * Reviewed: August 14, 2026
  *
  * Only serverless-available chat/generation models are included.
  * Non-chat models (whisper-large-v3, qwen3-embedding-8b, bge-multilingual-gemma2),
@@ -23,7 +23,7 @@ import type { ProviderModelConfig } from "@earendil-works/pi-coding-agent/compat
 
 /**
  * Static list of all serverless chat/generation models available on Scaleway.
- * Source: Scaleway docs (Reviewed May 26, 2026)
+ * Source: Scaleway docs (Reviewed August 14, 2026)
  *
  * Excluded:
  * - whisper-large-v3 (audio transcription, not a chat model)
@@ -62,6 +62,15 @@ export const DEFAULT_MODELS: ProviderModelConfig[] = [
 
   // ── Qwen ──────────────────────────────────────────────────────────────
   {
+    id: "qwen3.8-27b",
+    name: "Qwen 3.8 27B",
+    reasoning: true,
+    input: ["text", "image"],
+    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+    contextWindow: 256_000,
+    maxTokens: 32_000
+  },
+  {
     id: "qwen3.6-35b-a3b",
     name: "Qwen 3.6 35B",
     reasoning: true,
@@ -95,6 +104,17 @@ export const DEFAULT_MODELS: ProviderModelConfig[] = [
     input: ["text"],
     cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
     contextWindow: 128_000,
+    maxTokens: 32_000
+  },
+
+  // ── DeepSeek ────────────────────────────────────────────────────────
+  {
+    id: "deepseek-v4-flash-0731",
+    name: "DeepSeek V4 Flash",
+    reasoning: true,
+    input: ["text"],
+    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+    contextWindow: 256_000,
     maxTokens: 32_000
   },
 
