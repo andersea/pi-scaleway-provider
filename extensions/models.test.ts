@@ -52,6 +52,6 @@ describe('getModels', () => {
 
   it('returns the expected number of serverless models', () => {
     const models = getModels();
-    expect(models.length).toBe(15);
+    expect(models.length).toBe(12);
   });
 });
