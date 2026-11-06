@@ -55,18 +55,27 @@ export const DEFAULT_MODELS: ProviderModelConfig[] = [
     reasoning: true,
     thinkingLevelMap: { off: null },
     input: ["text"],
-    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+    cost: { input: 0.15, output: 0.60, cacheRead: 0, cacheWrite: 0 },
     contextWindow: 128_000,
     maxTokens: 32_000
   },
 
   // ── Qwen ──────────────────────────────────────────────────────────────
   {
+    id: "qwen3.8-27b",
+    name: "Qwen 3.8 27B",
+    reasoning: true,
+    input: ["text", "image"],
+    cost: { input: 0.60, output: 3.30, cacheRead: 0.12, cacheWrite: 0 },
+    contextWindow: 256_000,
+    maxTokens: 32_000
+  },
+  {
     id: "qwen3.6-35b-a3b",
     name: "Qwen 3.6 35B",
     reasoning: true,
     input: ["text", "image"],
-    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+    cost: { input: 0.25, output: 1.50, cacheRead: 0, cacheWrite: 0 },
     contextWindow: 256_000,
     maxTokens: 32_000
   },
@@ -75,27 +84,18 @@ export const DEFAULT_MODELS: ProviderModelConfig[] = [
     name: "Qwen 3.5 397B",
     reasoning: true,
     input: ["text", "image"],
-    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+    cost: { input: 0.60, output: 3.60, cacheRead: 0, cacheWrite: 0 },
     contextWindow: 250_000,
     maxTokens: 16_000
   },
   {
     id: "qwen3-235b-a22b-instruct-2507",
     name: "Qwen 3 235B Instruct",
-    reasoning: true,
-    input: ["text"],
-    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-    contextWindow: 250_000,
-    maxTokens: 16_000
-  },
-  {
-    id: "qwen3-coder-30b-a3b-instruct",
-    name: "Qwen 3 Coder 30B",
     reasoning: false,
     input: ["text"],
-    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-    contextWindow: 128_000,
-    maxTokens: 32_000
+    cost: { input: 0.75, output: 2.25, cacheRead: 0, cacheWrite: 0 },
+    contextWindow: 250_000,
+    maxTokens: 16_000
   },
 
   // ── Google / Gemma ────────────────────────────────────────────────────
@@ -104,18 +104,9 @@ export const DEFAULT_MODELS: ProviderModelConfig[] = [
     name: "Gemma 4 26B",
     reasoning: true,
     input: ["text", "image"],
-    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+    cost: { input: 0.25, output: 0.50, cacheRead: 0, cacheWrite: 0 },
     contextWindow: 256_000,
     maxTokens: 32_000
-  },
-  {
-    id: "gemma-3-27b-it",
-    name: "Gemma 3 27B",
-    reasoning: false,
-    input: ["text", "image"],
-    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-    contextWindow: 40_000,
-    maxTokens: 8_000
   },
 
   // ── Meta / Llama ──────────────────────────────────────────────────────
@@ -124,8 +115,8 @@ export const DEFAULT_MODELS: ProviderModelConfig[] = [
     name: "Llama 3.3 70B",
     reasoning: false,
     input: ["text"],
-    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-    contextWindow: 100_000,
+    cost: { input: 0.90, output: 0.90, cacheRead: 0, cacheWrite: 0 },
+    contextWindow: 128_000,
     maxTokens: 16_000
   },
 
@@ -135,7 +126,7 @@ export const DEFAULT_MODELS: ProviderModelConfig[] = [
     name: "Mistral Small 3.2",
     reasoning: false,
     input: ["text", "image"],
-    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+    cost: { input: 0.15, output: 0.15, cacheRead: 0, cacheWrite: 0 },
     contextWindow: 128_000,
     maxTokens: 32_000
   },
@@ -144,42 +135,15 @@ export const DEFAULT_MODELS: ProviderModelConfig[] = [
     name: "Mistral Medium 3.5",
     reasoning: true,
     input: ["text", "image"],
-    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-    contextWindow: 180_000,
-    maxTokens: 16_000
-  },
-  {
-    id: "voxtral-small-24b-2507",
-    name: "Voxtral Small 24B",
-    reasoning: false,
-    input: ["text", "audio"],
-    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-    contextWindow: 32_000,
-    maxTokens: 16_000
-  },
-  {
-    id: "devstral-2-123b-instruct-2512",
-    name: "Devstral 2 123B",
-    reasoning: false,
-    input: ["text"],
-    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-    contextWindow: 200_000,
-    maxTokens: 16_000
-  },
-  {
-    id: "pixtral-12b-2409",
-    name: "Pixtral 12B",
-    reasoning: false,
-    input: ["text", "image"],
-    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-    contextWindow: 128_000,
-    maxTokens: 4_000
+    cost: { input: 1.50, output: 7.5, cacheRead: 0, cacheWrite: 0 },
+    contextWindow: 256_000,
+    maxTokens: 32_000
   },
 
   // ── Z.ai ──────────────────────────────────────────────────────────────
   {
-    id: "glm-5.2",
-    name: "GLM 5.2",
+    id: "glm-5.3",
+    name: "GLM 5.3",
     reasoning: true,
     input: ["text"],
     cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
@@ -187,14 +151,23 @@ export const DEFAULT_MODELS: ProviderModelConfig[] = [
     maxTokens: 16_000
   },
 
-  // ── H Company ─────────────────────────────────────────────────────────
+  // ── DeepSeek ──────────────────────────────────────────────────────────
   {
-    id: "holo2-30b-a3b",
-    name: "Holo2 30B",
-    reasoning: false,
+    id: "deepseek-v4-flash-0731",
+    name: "DeepSeek v4 flash 0731",
+    reasoning: true,
+    input: ["text"],
+    cost: { input: 0.40, output: 0.80, cacheRead: 0.08, cacheWrite: 0 },
+    contextWindow: 256_000,
+    maxTokens: 32_000
+  },
+  {
+    id: "deepseek-v4.1-flash-1017",
+    name: "DeepSeek v4.1 flash 1017",
+    reasoning: true,
     input: ["text", "image"],
-    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-    contextWindow: 22_000,
+    cost: { input: 0.60, output: 1.80, cacheRead: 0.12, cacheWrite: 0 },
+    contextWindow: 256_000,
     maxTokens: 32_000
   }
 ];
